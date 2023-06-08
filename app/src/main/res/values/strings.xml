@@ -9,5 +9,11 @@
     <string name="fog_pig_subheading3">Prevention:</string>
     <string name="fog_pig_full_text">Inhabitants are to be wary of low visibility conditions while away from home. It is standard to carry an oil lantern in the house and while traveling. During the event of a low visibility incident, an oil lantern is to be kept on at all times. Other sources of light have yielded inconsistent results in preventing contact with Fog Pig. Candles are considered an alternative when an oil lantern has failed or is unavailable. Candles can stop a contact event however there is a high likelihood for permanent psychological damage due to proximity to Fog Pig. (See Light log below)
 </string>
+    <string name="city_pig_description">A pig walking the streets of Manhattan</string>
+    <string name="city_pig_heading">City Pig</string>
+    <string name="city_pig_subheading">Location: Manhattan, NY</string>
+    <string name="city_pig_subheading2">Subject: Generous, Wealthy</string>
+    <string name="city_pig_subheading3">Description:</string>
+    <string name="city_pig_full_text">City Pig is an adult male Pig currently residing in Wall Street in Apt *** *** in *********. He is capable of speech and claims he has been investing since 19**. His speech pattern and attire match the timeline. He frequently sighted taking walks around the lower Manhattan area. City Pig frequently gives large sums of capital to various New York startup companies. How this money enters circulation is unknown. These startup companies received payment in a variety of ways. Through large sums of cash, a digital transaction, or most frequently, through solid gold bars. Tracing any of these methods of payment have proved unfruitful. When questioned City Pig merely states, “Don’t ya worry nothin’, this gold’s the fruit of my portfolio”</string>
 
 </resources>
