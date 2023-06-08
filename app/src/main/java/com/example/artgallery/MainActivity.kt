@@ -6,8 +6,10 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -17,6 +19,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.InlineTextContent
 import androidx.compose.foundation.text.appendInlineContent
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.materialIcon
+import androidx.compose.material.icons.outlined.ArrowBack
+import androidx.compose.material.icons.outlined.ArrowForward
+import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -74,6 +82,7 @@ fun ArtLayout() {
            artFullText = R.string.fog_pig_full_text,
            modifier = Modifier
        )
+       ButtonRow()
 
    }
 }
@@ -87,7 +96,7 @@ private fun ArtAndDescription(
     artSubHeading2: Int,
     artSubHeading3: Int,
     artFullText: Int,
-    modifier: Modifier
+    modifier: Modifier = Modifier
 
 ){
     //always be passing modifier, only when its the layout do you not
@@ -139,6 +148,34 @@ private fun ArtAndDescription(
         )
     }
 
+}
+@Composable
+private fun ButtonRow(
+    modifier: Modifier = Modifier
+){
+    Row(
+        horizontalArrangement = Arrangement.SpaceBetween,
+        modifier = modifier
+            .padding(top = 24.dp)
+            .padding(bottom = 8.dp)
+            .padding(horizontal = 16.dp)
+            .fillMaxWidth()
+
+    ){
+        //When using a button you have to define a composable within
+        Button(onClick = { /*TODO*/ }) {
+            Icon(
+                Icons.Outlined.ArrowBack,
+                contentDescription = stringResource(id = R.string.arrow_back_description),
+            )
+        }
+        Button(onClick = { /*TODO*/ }) {
+            Icon(
+                Icons.Outlined.ArrowForward,
+                contentDescription = stringResource(id = R.string.arrow_forward_description)
+            )
+        }
+    }
 }
 
 //Want to define a box for art and description and

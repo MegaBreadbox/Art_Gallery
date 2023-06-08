@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">ArtGallery</string>
+    <string name="arrow_back_description">Back arrow</string>
+    <string name="arrow_forward_description">Forward arrow</string>
     <string name="fog_pig_description">A pig hiding in behind trees in the winter</string>
     <string name="fog_pig_heading">Fog pig</string>
     <string name="fog_pig_subheading">Sighted in ******** ******</string>
