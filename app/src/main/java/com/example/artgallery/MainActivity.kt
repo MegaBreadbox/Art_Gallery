@@ -16,6 +16,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.InlineTextContent
@@ -26,6 +28,7 @@ import androidx.compose.material.icons.materialIcon
 import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.ArrowForward
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -53,6 +56,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.draw.shadow
+import com.example.artgallery.data.DataSource
+import com.example.artgallery.model.PigCard
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -84,6 +89,19 @@ fun ArtLayout() {
 
        when (currentState){
            1->{
+               PigCardList(pigList = DataSource.Pigs)
+
+               ButtonRow(
+                   incrementCounter = {
+                       currentState = 2
+                   },
+                   decrementCounter = {
+                       currentState = 1
+                   }
+               )
+           }
+
+           2->{
                ArtAndDescription(
                    artPiece = R.drawable.fogpigcompletev2,
                    artDesc = R.string.fog_pig_description,
@@ -96,14 +114,14 @@ fun ArtLayout() {
                )
                ButtonRow(
                    incrementCounter = {
-                       currentState = 2
+                       currentState = 3
                    },
                    decrementCounter = {
                        currentState = 1
                    }
                )
            }
-           2->{
+           3->{
                ArtAndDescription(
                    artPiece = R.drawable.city_pig,
                    artDesc = R.string.city_pig_description,
@@ -116,10 +134,10 @@ fun ArtLayout() {
                )
                ButtonRow(
                    incrementCounter = {
-                       currentState = 2
+                       currentState = 3
                    },
                    decrementCounter = {
-                       currentState = 1
+                       currentState = 2
                    }
                )
            }
@@ -231,7 +249,30 @@ private fun ButtonRow(
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
-    ArtGalleryTheme {
-        ArtLayout()
+
+}
+
+@Composable
+fun PigCardLayout(pig: PigCard, modifier: Modifier = Modifier){
+    Card(modifier = modifier){
+        Column{
+            Image(
+                painter = painterResource(pig.imageResourceId),
+                contentDescription = stringResource(id = pig.stringResourceId)
+            )
+            Text(
+                text = stringResource(pig.stringResourceId)
+            )
+        }
+    }
+}
+
+@Composable
+fun PigCardList(pigList: List<PigCard>, modifier: Modifier = Modifier){
+    LazyColumn(modifier = modifier){
+        
+        items(pigList){PigCard ->
+            PigCardLayout(PigCard)
+        }
     }
 }
