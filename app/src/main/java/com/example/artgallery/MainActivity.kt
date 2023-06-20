@@ -1,15 +1,10 @@
 package com.example.artgallery
 
-import android.icu.number.Scale
-import android.media.audiofx.AudioEffect.Descriptor
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -20,11 +15,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.InlineTextContent
-import androidx.compose.foundation.text.appendInlineContent
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.materialIcon
 import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.ArrowForward
 import androidx.compose.material3.Button
@@ -34,7 +26,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -42,12 +33,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.Placeholder
-import androidx.compose.ui.text.PlaceholderVerticalAlign
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.LineBreak
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -55,7 +41,6 @@ import com.example.artgallery.ui.theme.ArtGalleryTheme
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.draw.shadow
 import com.example.artgallery.data.DataSource
 import com.example.artgallery.model.PigCard
 
@@ -79,26 +64,12 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun ArtLayout() {
    Column(
-
        modifier = Modifier
-
-           .verticalScroll(rememberScrollState()),
-
    ){
        var currentState by remember{ mutableStateOf(1) }
-
        when (currentState){
            1->{
-               PigCardList(pigList = DataSource.Pigs)
-
-               ButtonRow(
-                   incrementCounter = {
-                       currentState = 2
-                   },
-                   decrementCounter = {
-                       currentState = 1
-                   }
-               )
+               PigCardList(pigList = DataSource.Pigs, {currentState = 2}, {currentState = 1} )
            }
 
            2->{
@@ -110,15 +81,13 @@ fun ArtLayout() {
                    artSubHeading2 = R.string.fog_pig_subheading2,
                    artSubHeading3 = R.string.fog_pig_subheading3,
                    artFullText = R.string.fog_pig_full_text,
-                   modifier = Modifier
-               )
-               ButtonRow(
                    incrementCounter = {
                        currentState = 3
                    },
                    decrementCounter = {
                        currentState = 1
-                   }
+                   },
+                   modifier = Modifier
                )
            }
            3->{
@@ -130,15 +99,14 @@ fun ArtLayout() {
                    artSubHeading2 = R.string.city_pig_subheading2,
                    artSubHeading3 = R.string.city_pig_subheading3,
                    artFullText = R.string.city_pig_full_text,
-                   modifier = Modifier
-               )
-               ButtonRow(
+
                    incrementCounter = {
                        currentState = 3
                    },
                    decrementCounter = {
                        currentState = 2
-                   }
+                   },
+                   modifier = Modifier
                )
            }
 
@@ -155,6 +123,8 @@ private fun ArtAndDescription(
     artSubHeading2: Int,
     artSubHeading3: Int,
     artFullText: Int,
+    incrementCounter: () -> Unit,
+    decrementCounter: () -> Unit,
     modifier: Modifier = Modifier
 
 ){
@@ -162,8 +132,8 @@ private fun ArtAndDescription(
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
-            .fillMaxSize()
             .padding(8.dp)
+            .verticalScroll(rememberScrollState())
     ){
         Image(
             painter = painterResource(artPiece),
@@ -206,6 +176,7 @@ private fun ArtAndDescription(
             //not really the best way to indent, but it works for now
             text = "     " + stringResource(artFullText)
         )
+        ButtonRow(incrementCounter,decrementCounter)
     }
 
 }
@@ -253,26 +224,43 @@ fun GreetingPreview() {
 }
 
 @Composable
-fun PigCardLayout(pig: PigCard, modifier: Modifier = Modifier){
-    Card(modifier = modifier){
+fun PigCardLayout(
+    pig: PigCard,
+    modifier: Modifier = Modifier
+){
+    Card(modifier = modifier.fillMaxWidth()){
         Column{
             Image(
                 painter = painterResource(pig.imageResourceId),
-                contentDescription = stringResource(id = pig.stringResourceId)
+                contentScale = ContentScale.FillWidth,
+                contentDescription = stringResource(id = pig.stringResourceId),
+                modifier = modifier.fillMaxWidth()
             )
             Text(
-                text = stringResource(pig.stringResourceId)
+                text = stringResource(pig.stringResourceId),
+                modifier.padding(4.dp)
             )
         }
     }
 }
 
 @Composable
-fun PigCardList(pigList: List<PigCard>, modifier: Modifier = Modifier){
-    LazyColumn(modifier = modifier){
+fun PigCardList(
+    pigList: List<PigCard>,
+    increment: () -> Unit,
+    decrement: () -> Unit,
+    modifier: Modifier = Modifier
+
+){
+    LazyColumn(
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(4.dp)
+    ){
         
         items(pigList){PigCard ->
             PigCardLayout(PigCard)
         }
+
+        item{ButtonRow(increment, decrement)}
     }
 }
