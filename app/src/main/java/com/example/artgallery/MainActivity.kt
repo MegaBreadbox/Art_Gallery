@@ -34,13 +34,16 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.artgallery.ui.theme.ArtGalleryTheme
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.navigation.compose.NavHost
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.example.artgallery.data.DataSource
 import com.example.artgallery.model.PigCard
 
@@ -62,11 +65,24 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun ArtLayout() {
+fun ArtLayout(
+    navController: NavHostController = rememberNavController()
+) {
    Column(
        modifier = Modifier
    ){
        var currentState by remember{ mutableStateOf(1) }
+       
+       NavHost(
+           navController = navController,
+           startDestination = PigScreen.Piglist.name,
+           modifier = Modifier
+       ){
+           composable(route = PigScreen.Piglist.name){
+
+           }
+       }
+
        when (currentState){
            1->{
                PigCardList(pigList = DataSource.Pigs, {currentState = 2}, {currentState = 1} )
@@ -217,12 +233,6 @@ private fun ButtonRow(
 //a row for the buttons
 //Put em' all in a column
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-
-}
-
 @Composable
 fun PigCardLayout(
     pig: PigCard,
@@ -263,4 +273,10 @@ fun PigCardList(
 
         item{ButtonRow(increment, decrement)}
     }
+}
+
+enum class PigScreen(){
+    Piglist,
+    Fogpig,
+    Citypig,
 }
