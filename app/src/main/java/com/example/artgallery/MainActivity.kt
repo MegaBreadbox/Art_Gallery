@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -40,6 +42,7 @@ import com.example.artgallery.ui.theme.ArtGalleryTheme
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
@@ -79,7 +82,31 @@ fun ArtLayout(
            modifier = Modifier
        ){
            composable(route = PigScreen.Piglist.name){
-
+               PigCardList(pigList = DataSource.Pigs)
+           }
+           
+           composable(route = PigScreen.Fogpig.name) {
+               ArtAndDescription(
+                   artPiece = R.drawable.fogpigcompletev2,
+                   artDesc = R.string.fog_pig_description,
+                   artHeading = R.string.fog_pig_heading,
+                   artSubHeading = R.string.fog_pig_subheading,
+                   artSubHeading2 = R.string.fog_pig_subheading2,
+                   artSubHeading3 = R.string.fog_pig_subheading3,
+                   artFullText = R.string.fog_pig_full_text
+               )
+           }
+           
+           composable(route = PigScreen.Citypig.name){
+               ArtAndDescription(
+                   artPiece = R.drawable.city_pig,
+                   artDesc = R.string.city_pig_description,
+                   artHeading = R.string.city_pig_heading,
+                   artSubHeading = R.string.city_pig_subheading,
+                   artSubHeading2 = R.string.city_pig_subheading2,
+                   artSubHeading3 = R.string.city_pig_subheading3,
+                   artFullText = R.string.city_pig_full_text
+               )
            }
        }
 
@@ -139,8 +166,6 @@ private fun ArtAndDescription(
     artSubHeading2: Int,
     artSubHeading3: Int,
     artFullText: Int,
-    incrementCounter: () -> Unit,
-    decrementCounter: () -> Unit,
     modifier: Modifier = Modifier
 
 ){
@@ -236,9 +261,14 @@ private fun ButtonRow(
 @Composable
 fun PigCardLayout(
     pig: PigCard,
+    navigate: () -> Unit,
     modifier: Modifier = Modifier
 ){
-    Card(modifier = modifier.fillMaxWidth()){
+    Card(modifier = modifier
+        .fillMaxWidth()
+        .clickable { navigate }
+
+    ){
         Column{
             Image(
                 painter = painterResource(pig.imageResourceId),
@@ -257,8 +287,8 @@ fun PigCardLayout(
 @Composable
 fun PigCardList(
     pigList: List<PigCard>,
-    increment: () -> Unit,
-    decrement: () -> Unit,
+    pigScreen: Array<PigScreen>,
+    navController: NavController
     modifier: Modifier = Modifier
 
 ){
@@ -267,13 +297,14 @@ fun PigCardList(
         verticalArrangement = Arrangement.spacedBy(4.dp)
     ){
         
-        items(pigList){PigCard ->
-            PigCardLayout(PigCard)
+        itemsIndexed(pigList){index,PigCard ->
+            PigCardLayout(PigCard, navController.navigate(pigScreen[index+1]))
         }
 
-        item{ButtonRow(increment, decrement)}
     }
 }
+
+val list = PigScreen.values()
 
 enum class PigScreen(){
     Piglist,
