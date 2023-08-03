@@ -69,7 +69,7 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun ArtLayout(
-    navController: NavHostController = rememberNavController()
+    navController: NavHostController = rememberNavController(),
 ) {
    Column(
        modifier = Modifier
@@ -82,7 +82,7 @@ fun ArtLayout(
            modifier = Modifier
        ){
            composable(route = PigScreen.Piglist.name){
-               PigCardList(pigList = DataSource.Pigs)
+               PigCardList(pigList = DataSource.Pigs, navController = navController)
            }
            
            composable(route = PigScreen.Fogpig.name) {
@@ -110,52 +110,6 @@ fun ArtLayout(
            }
        }
 
-       when (currentState){
-           1->{
-               PigCardList(pigList = DataSource.Pigs, {currentState = 2}, {currentState = 1} )
-           }
-
-           2->{
-               ArtAndDescription(
-                   artPiece = R.drawable.fogpigcompletev2,
-                   artDesc = R.string.fog_pig_description,
-                   artHeading = R.string.fog_pig_heading,
-                   artSubHeading = R.string.fog_pig_subheading,
-                   artSubHeading2 = R.string.fog_pig_subheading2,
-                   artSubHeading3 = R.string.fog_pig_subheading3,
-                   artFullText = R.string.fog_pig_full_text,
-                   incrementCounter = {
-                       currentState = 3
-                   },
-                   decrementCounter = {
-                       currentState = 1
-                   },
-                   modifier = Modifier
-               )
-           }
-           3->{
-               ArtAndDescription(
-                   artPiece = R.drawable.city_pig,
-                   artDesc = R.string.city_pig_description,
-                   artHeading = R.string.city_pig_heading,
-                   artSubHeading = R.string.city_pig_subheading,
-                   artSubHeading2 = R.string.city_pig_subheading2,
-                   artSubHeading3 = R.string.city_pig_subheading3,
-                   artFullText = R.string.city_pig_full_text,
-
-                   incrementCounter = {
-                       currentState = 3
-                   },
-                   decrementCounter = {
-                       currentState = 2
-                   },
-                   modifier = Modifier
-               )
-           }
-
-       }
-   }
-}
 //Has to be generic to pass all art pieces thru it
 @Composable
 private fun ArtAndDescription(
@@ -217,7 +171,7 @@ private fun ArtAndDescription(
             //not really the best way to indent, but it works for now
             text = "     " + stringResource(artFullText)
         )
-        ButtonRow(incrementCounter,decrementCounter)
+        //ButtonRow(incrementCounter,decrementCounter)
     }
 
 }
@@ -287,8 +241,7 @@ fun PigCardLayout(
 @Composable
 fun PigCardList(
     pigList: List<PigCard>,
-    pigScreen: Array<PigScreen>,
-    navController: NavController
+    navController: NavController,
     modifier: Modifier = Modifier
 
 ){
@@ -298,7 +251,7 @@ fun PigCardList(
     ){
         
         itemsIndexed(pigList){index,PigCard ->
-            PigCardLayout(PigCard, navController.navigate(pigScreen[index+1]))
+            PigCardLayout(PigCard, { navController.navigate(PigScreen.values()[index + 1].name) })
         }
 
     }
@@ -306,7 +259,7 @@ fun PigCardList(
 
 val list = PigScreen.values()
 
-enum class PigScreen(){
+enum class PigScreen() {
     Piglist,
     Fogpig,
     Citypig,
