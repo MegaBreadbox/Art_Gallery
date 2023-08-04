@@ -6,7 +6,6 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -23,6 +22,7 @@ import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.ArrowForward
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -64,12 +64,13 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ArtAppBar(
     modifier: Modifier = Modifier
 ){
     TopAppBar(
-        title = { "Pig Archieves"},
+        title = { Text("Pig Archieves") },
         colors = TopAppBarDefaults.mediumTopAppBarColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer
         ),
@@ -78,52 +79,52 @@ fun ArtAppBar(
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ArtLayout(
+    modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
-    modifier: Modifier = Modifier
 ) {
     Scaffold(
         topBar = {
             ArtAppBar()
         }
     ){contentPadding ->
+        Column(modifier.padding(contentPadding)) {
+            NavHost(
+                navController = navController,
+                startDestination = PigScreen.Piglist.name,
+                modifier = Modifier
+            ) {
+                composable(route = PigScreen.Piglist.name) {
+                    PigCardList(pigList = DataSource.Pigs, navController = navController)
+                }
 
+                composable(route = PigScreen.Fogpig.name) {
+                    ArtAndDescription(
+                        artPiece = R.drawable.fogpigcompletev2,
+                        artDesc = R.string.fog_pig_description,
+                        artHeading = R.string.fog_pig_heading,
+                        artSubHeading = R.string.fog_pig_subheading,
+                        artSubHeading2 = R.string.fog_pig_subheading2,
+                        artSubHeading3 = R.string.fog_pig_subheading3,
+                        artFullText = R.string.fog_pig_full_text
+                    )
+                }
 
-        NavHost(
-            navController = navController,
-            startDestination = PigScreen.Piglist.name,
-            modifier = Modifier
-        ) {
-            composable(route = PigScreen.Piglist.name) {
-                PigCardList(pigList = DataSource.Pigs, navController = navController)
-            }
-
-            composable(route = PigScreen.Fogpig.name) {
-                ArtAndDescription(
-                    artPiece = R.drawable.fogpigcompletev2,
-                    artDesc = R.string.fog_pig_description,
-                    artHeading = R.string.fog_pig_heading,
-                    artSubHeading = R.string.fog_pig_subheading,
-                    artSubHeading2 = R.string.fog_pig_subheading2,
-                    artSubHeading3 = R.string.fog_pig_subheading3,
-                    artFullText = R.string.fog_pig_full_text
-                )
-            }
-
-            composable(route = PigScreen.Citypig.name) {
-                ArtAndDescription(
-                    artPiece = R.drawable.city_pig,
-                    artDesc = R.string.city_pig_description,
-                    artHeading = R.string.city_pig_heading,
-                    artSubHeading = R.string.city_pig_subheading,
-                    artSubHeading2 = R.string.city_pig_subheading2,
-                    artSubHeading3 = R.string.city_pig_subheading3,
-                    artFullText = R.string.city_pig_full_text
-                )
+                composable(route = PigScreen.Citypig.name) {
+                    ArtAndDescription(
+                        artPiece = R.drawable.city_pig,
+                        artDesc = R.string.city_pig_description,
+                        artHeading = R.string.city_pig_heading,
+                        artSubHeading = R.string.city_pig_subheading,
+                        artSubHeading2 = R.string.city_pig_subheading2,
+                        artSubHeading3 = R.string.city_pig_subheading3,
+                        artFullText = R.string.city_pig_full_text
+                    )
+                }
             }
         }
-        Box(modifier.padding(contentPadding))
     }
 }
 //Has to be generic to pass all art pieces thru it
