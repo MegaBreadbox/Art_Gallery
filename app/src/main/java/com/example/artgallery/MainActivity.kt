@@ -18,12 +18,15 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.ArrowForward
+import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -67,6 +70,8 @@ class MainActivity : ComponentActivity() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ArtAppBar(
+    canNavigateBack: Boolean,
+    navigateUp: () -> Unit,
     modifier: Modifier = Modifier
 ){
     TopAppBar(
@@ -75,6 +80,16 @@ fun ArtAppBar(
             containerColor = MaterialTheme.colorScheme.primaryContainer
         ),
         modifier = modifier,
+        navigationIcon = {
+            if (canNavigateBack) {
+                IconButton(onClick = navigateUp) {
+                    Icon(
+                        imageVector = Icons.Filled.ArrowBack,
+                        contentDescription = stringResource(R.string.back_button)
+                    )
+                }
+            }
+        }
 
     )
 }
@@ -87,7 +102,10 @@ fun ArtLayout(
 ) {
     Scaffold(
         topBar = {
-            ArtAppBar()
+            ArtAppBar(
+                canNavigateBack = navController.previousBackStackEntry != null,
+                navigateUp = { navController.navigateUp() }
+            )
         }
     ){contentPadding ->
         Column(modifier.padding(contentPadding)) {
@@ -237,7 +255,7 @@ fun PigCardLayout(
 ){
     Card(modifier = modifier
         .fillMaxWidth()
-        .clickable { navController.navigate(PigScreen.values()[index + 1].name) }
+        .clickable { navController.navigate(PigScreen.values().drop(1)[index].name) }
 
     ){
         Column{
