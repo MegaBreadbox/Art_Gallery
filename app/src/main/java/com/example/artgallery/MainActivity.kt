@@ -7,7 +7,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -19,10 +18,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.outlined.ArrowBack
-import androidx.compose.material.icons.outlined.ArrowForward
-import androidx.compose.material.icons.rounded.ArrowBack
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -34,6 +29,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -46,6 +42,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.artgallery.data.DataSource
 import com.example.artgallery.model.PigCard
@@ -67,15 +64,17 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ArtAppBar(
     canNavigateBack: Boolean,
     navigateUp: () -> Unit,
+    currentScreen: PigScreen,
     modifier: Modifier = Modifier
 ){
     TopAppBar(
-        title = { Text("Pig Archieves") },
+        title = { Text(currentScreen.name)},
         colors = TopAppBarDefaults.mediumTopAppBarColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer
         ),
@@ -94,28 +93,38 @@ fun ArtAppBar(
     )
 }
 
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ArtLayout(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
 ) {
+    val backStackEntry by navController.currentBackStackEntryAsState()
+    val currentScreen = PigScreen.valueOf(
+        backStackEntry?.destination?.route ?: PigScreen.Piglist.name
+    )
     Scaffold(
         topBar = {
             ArtAppBar(
                 canNavigateBack = navController.previousBackStackEntry != null,
-                navigateUp = { navController.navigateUp() }
+                navigateUp = { navController.navigateUp() },
+                currentScreen = currentScreen
             )
         }
     ){contentPadding ->
         Column(modifier.padding(contentPadding)) {
+
             NavHost(
                 navController = navController,
                 startDestination = PigScreen.Piglist.name,
                 modifier = Modifier
             ) {
                 composable(route = PigScreen.Piglist.name) {
-                    PigCardList(pigList = DataSource.Pigs, navController = navController)
+                    PigCardList(
+                        pigList = DataSource.Pigs,
+                        onClick = { navController.navigate(it) }
+                    )
                 }
 
                 composable(route = PigScreen.Fogpig.name) {
@@ -210,37 +219,7 @@ private fun ArtAndDescription(
     }
 }
 //Lambdas are placed above modifier
-@Composable
-private fun ButtonRow(
-    incrementCounter: () -> Unit,
-    decrementCounter: () -> Unit,
-    modifier: Modifier = Modifier
-){
-    Row(
-        horizontalArrangement = Arrangement.SpaceBetween,
-        modifier = modifier
-            .padding(top = 24.dp)
-            .padding(bottom = 8.dp)
-            .padding(horizontal = 16.dp)
-            .fillMaxWidth()
 
-    ){
-        //When using a button you have to define a composable within
-        //Spent about an hour debugging a lambda syntax error. Yep
-        Button(onClick = decrementCounter) {
-            Icon(
-                Icons.Outlined.ArrowBack,
-                contentDescription = stringResource(id = R.string.arrow_back_description),
-            )
-        }
-        Button(onClick = incrementCounter) {
-            Icon(
-                Icons.Outlined.ArrowForward,
-                contentDescription = stringResource(id = R.string.arrow_forward_description)
-            )
-        }
-    }
-}
 
 //Want to define a box for art and description and
 //a row for the buttons
@@ -250,12 +229,12 @@ private fun ButtonRow(
 fun PigCardLayout(
     pig: PigCard,
     index: Int,
-    navController: NavHostController,
+    onClick: (String) -> Unit,
     modifier: Modifier = Modifier
 ){
     Card(modifier = modifier
         .fillMaxWidth()
-        .clickable { navController.navigate(PigScreen.values().drop(1)[index].name) }
+        .clickable { onClick(PigScreen.values().drop(1)[index].name) }
 
     ){
         Column{
@@ -276,7 +255,7 @@ fun PigCardLayout(
 @Composable
 fun PigCardList(
     pigList: List<PigCard>,
-    navController: NavHostController,
+    onClick: (String) -> Unit,
     modifier: Modifier = Modifier
 
 ){
@@ -286,7 +265,7 @@ fun PigCardList(
     ){
         
         itemsIndexed(pigList){index,PigCard ->
-            PigCardLayout(PigCard, index, navController)
+            PigCardLayout(PigCard, index, onClick)
         }
     }
 }
